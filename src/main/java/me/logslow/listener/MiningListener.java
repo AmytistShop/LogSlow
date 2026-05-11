@@ -2,11 +2,12 @@ package me.logslow.listener;
 
 import me.logslow.LogSlowPlugin;
 import me.logslow.util.LogUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -16,53 +17,35 @@ public class MiningListener implements Listener {
 
     public MiningListener(LogSlowPlugin plugin) {
         this.plugin = plugin;
-
-        startTask();
     }
 
-    private void startTask() {
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onDamage(BlockDamageEvent event) {
 
-        Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+        Player player = event.getPlayer();
 
-            double multiplier = plugin.getConfig().getDouble("slow_multiplier", 2.0);
+        Material material = event.getBlock().getType();
 
-            int amplifier = calculateAmplifier(multiplier);
+        boolean onlyLogs = plugin.getConfig().getBoolean("only_logs", true);
 
-            for (Player player : Bukkit.getOnlinePlayers()) {
+        if (onlyLogs && !LogUtil.isLog(material)) {
+            return;
+        }
 
-                Block target = player.getTargetBlockExact(5);
+        double multiplier = plugin.getConfig().getDouble("slow_multiplier", 2.0);
 
-                if (target == null) {
-                    remove(player);
-                    continue;
-                }
+        int amplifier = calculateAmplifier(multiplier);
 
-                Material material = target.getType();
+        PotionEffect effect = new PotionEffect(
+                PotionEffectType.SLOW_DIGGING,
+                20,
+                amplifier,
+                false,
+                false,
+                false
+        );
 
-                boolean onlyLogs = plugin.getConfig().getBoolean("only_logs", true);
-
-                if (onlyLogs && !LogUtil.isLog(material)) {
-                    remove(player);
-                    continue;
-                }
-
-                PotionEffect effect = new PotionEffect(
-                        PotionEffectType.SLOW_DIGGING,
-                        10,
-                        amplifier,
-                        false,
-                        false,
-                        false
-                );
-
-                player.addPotionEffect(effect, true);
-            }
-
-        }, 1L, 1L);
-    }
-
-    private void remove(Player player) {
-        player.removePotionEffect(PotionEffectType.SLOW_DIGGING);
+        player.addPotionEffect(effect, true);
     }
 
     private int calculateAmplifier(double multiplier) {
