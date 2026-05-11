@@ -46,7 +46,7 @@ public class MiningListener implements Listener {
         int amplifier = calculateAmplifier(multiplier);
 
         PotionEffect effect = new PotionEffect(
-                PotionEffectType.MINING_FATIGUE,
+                PotionEffectType.SLOW_DIGGING,
                 40,
                 amplifier,
                 false,
@@ -70,6 +70,7 @@ public class MiningListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onBreak(BlockBreakEvent event) {
+
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             removeFatigue(event.getPlayer());
         }, 1L);
@@ -81,7 +82,7 @@ public class MiningListener implements Listener {
             return;
         }
 
-        player.removePotionEffect(PotionEffectType.MINING_FATIGUE);
+        player.removePotionEffect(PotionEffectType.SLOW_DIGGING);
 
         slowedPlayers.remove(player.getUniqueId());
     }
