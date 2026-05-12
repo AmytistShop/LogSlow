@@ -1,14 +1,21 @@
 package me.logslow;
 
-import me.logslow.listener.PacketMiningListener;
+import me.logslow.listener.MiningPacketListener;
+import me.logslow.mining.MiningManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class LogSlowPlugin extends JavaPlugin {
 
     private static LogSlowPlugin instance;
 
+    private MiningManager miningManager;
+
     public static LogSlowPlugin getInstance() {
         return instance;
+    }
+
+    public MiningManager getMiningManager() {
+        return miningManager;
     }
 
     @Override
@@ -18,14 +25,10 @@ public class LogSlowPlugin extends JavaPlugin {
 
         saveDefaultConfig();
 
-        new PacketMiningListener(this);
+        miningManager = new MiningManager(this);
 
-        getLogger().info("LogSlow enabled.");
-    }
+        new MiningPacketListener(this);
 
-    @Override
-    public void onDisable() {
-
-        getLogger().info("LogSlow disabled.");
+        getLogger().info("Advanced mining engine enabled.");
     }
 }
