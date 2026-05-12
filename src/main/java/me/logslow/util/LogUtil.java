@@ -11,8 +11,6 @@ public class LogUtil {
         return name.endsWith("_LOG")
                 || name.endsWith("_WOOD")
                 || name.equals("CRIMSON_STEM")
-                || name.equals("WARPED_STEM")
-                || name.equals("MANGROVE_ROOTS")
-                || name.equals("MUDDY_MANGROVE_ROOTS");
+                || name.equals("WARPED_STEM");
     }
 }
