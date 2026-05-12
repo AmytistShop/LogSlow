@@ -14,6 +14,7 @@ public class MiningPacketListener {
     private final LogSlowPlugin plugin;
 
     public MiningPacketListener(LogSlowPlugin plugin) {
+
         this.plugin = plugin;
 
         register();
