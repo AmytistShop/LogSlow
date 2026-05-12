@@ -5,7 +5,9 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.EnumWrappers;
+
 import me.logslow.LogSlowPlugin;
+
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
@@ -22,8 +24,11 @@ public class MiningPacketListener {
 
     private void register() {
 
+        LogSlowPlugin pl = this.plugin;
+
         ProtocolLibrary.getProtocolManager().addPacketListener(
-                new PacketAdapter(plugin, PacketType.Play.Client.BLOCK_DIG) {
+
+                new PacketAdapter(pl, PacketType.Play.Client.BLOCK_DIG) {
 
                     @Override
                     public void onPacketReceiving(PacketEvent event) {
@@ -45,13 +50,13 @@ public class MiningPacketListener {
 
                                 event.setCancelled(true);
 
-                                plugin.getMiningManager().startMining(player, block);
+                                pl.getMiningManager().startMining(player, block);
                             }
 
                             case ABORT_DESTROY_BLOCK,
                                  STOP_DESTROY_BLOCK -> {
 
-                                plugin.getMiningManager().stopMining(player);
+                                pl.getMiningManager().stopMining(player);
                             }
                         }
                     }
